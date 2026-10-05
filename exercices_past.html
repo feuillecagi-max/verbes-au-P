@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>フランス語 動詞活用ドリル（複合過去・半過去）</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.4rem;
+      color: #333;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+    }
+    .badge-passe {
+      background-color: #e3f2fd;
+      color: #1976d2;
+    }
+    .badge-imparfait {
+      background-color: #f3e5f5;
+      color: #7b1fa2;
+    }
+    .question-box {
+      background-color: #f8f9fa;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .subject {
+      font-size: 1.2rem;
+      color: #555;
+    }
+    .verb {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #2c3e50;
+      margin: 10px 0;
+    }
+    .meaning {
+      font-size: 0.9rem;
+      color: #777;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 1.1rem;
+      border: 2px solid #cccccc;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      text-align: center;
+      outline: none;
+    }
+    input[type="text"]:focus {
+      border-color: #3498db;
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    button {
+      flex: 1;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .btn-submit {
+      background-color: #2ecc71;
+      color: white;
+    }
+    .btn-submit:hover {
+      background-color: #27ae60;
+    }
+    .btn-next {
+      background-color: #3498db;
+      color: white;
+    }
+    .btn-next:hover {
+      background-color: #2980b9;
+    }
+    .btn-hint {
+      background-color: #95a5a6;
+      color: white;
+      font-size: 0.85rem;
+      padding: 8px;
+    }
+    .result {
+      font-size: 1.1rem;
+      font-weight: bold;
+      min-height: 28px;
+      margin-bottom: 10px;
+    }
+    .correct {
+      color: #27ae60;
+    }
+    .incorrect {
+      color: #e74c3c;
+    }
+    .hint-text {
+      font-size: 0.9rem;
+      color: #888;
+      min-height: 20px;
+    }
+    .nav-link {
+      display: inline-block;
+      margin-top: 15px;
+      color: #7f8c8d;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .nav-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>フランス語 動詞活用ドリル</h1>
+
+    <div id="tense-badge" class="badge badge-passe">複合過去</div>
+
+    <div class="question-box">
+      <div id="subject-text" class="subject">Je</div>
+      <div id="verb-text" class="verb">aimer</div>
+      <div id="meaning-text" class="meaning">(好む・愛する)</div>
+    </div>
+
+    <form id="quiz-form" onsubmit="checkAnswer(event)">
+      <input type="text" id="answer-input" placeholder="活用を入力 (例: ai aimé)" autocomplete="off" autofocus>
+      
+      <div class="btn-group">
+        <button type="submit" class="btn-submit">判定</button>
+        <button type="button" class="btn-next" onclick="nextQuestion()">次の問題 ➔</button>
+      </div>
+    </form>
+
+    <button type="button" class="btn-hint" onclick="showHint()">正解を表示</button>
+
+    <div id="result-message" class="result"></div>
+    <div id="hint-message" class="hint-text"></div>
+
+    <br>
+    <a href="index.html" class="nav-link">← ホームに戻る</a>
+  </div>
+
+  <script>
+    // 問題データセット
+    const verbs = [
+      {
+        infinitive: "être",
+        meaning: "～である・存在する",
+        passe: {
+          "Je / J'": "ai été", "Tu": "as été", "Il / Elle": "a été",
+          "Nous": "avons été", "Vous": "avez été", "Ils / Elles": "ont été"
+        },
+        imparfait: {
+          "Je / J'": "étais", "Tu": "étais", "Il / Elle": "était",
+          "Nous": "étions", "Vous": "étiez", "Ils / Elles": "étaient"
+        }
+      },
+      {
+        infinitive: "avoir",
+        meaning: "持っている",
+        passe: {
+          "Je / J'": "ai eu", "Tu": "as eu", "Il / Elle": "a eu",
+          "Nous": "avons eu", "Vous": "avez eu", "Ils / Elles": "ont eu"
+        },
+        imparfait: {
+          "Je / J'": "avais", "Tu": "avais", "Il / Elle": "avait",
+          "Nous": "avions", "Vous": "aviez", "Ils / Elles": "avaient"
+        }
+      },
+      {
+        infinitive: "faire",
+        meaning: "する・作る",
+        passe: {
+          "Je / J'": "ai fait", "Tu": "as fait", "Il / Elle": "a fait",
+          "Nous": "avons fait", "Vous": "avez fait", "Ils / Elles": "ont fait"
+        },
+        imparfait: {
+          "Je / J'": "faisais", "Tu": "faisais", "Il / Elle": "faisait",
+          "Nous": "faisions", "Vous": "faisiez", "Ils / Elles": "faisaient"
+        }
+      },
+      {
+        infinitive: "aller",
+        meaning: "行く",
+        passe: {
+          "Je / J'": "suis allé", "Tu": "es allé", "Il / Elle": "est allé",
+          "Nous": "sommes allés", "Vous": "êtes接続", "Ils / Elles": "sont allés"
+        },
+        imparfait: {
+          "Je / J'": "allais", "Tu": "allais", "Il / Elle": "allait",
+          "Nous": "allions", "Vous": "alliez", "Ils / Elles": "allaient"
+        }
+      },
+      {
+        infinitive: "manger",
+        meaning: "食べる",
+        passe: {
+          "Je / J'": "ai mangé", "Tu": "as mangé", "Il / Elle": "a mangé",
+          "Nous": "avons mangé", "Vous": "avez mangé", "Ils / Elles": "ont mangé"
+        },
+        imparfait: {
+          "Je / J'": "mangeais", "Tu": "mangeais", "Il / Elle": "mangeait",
+          "Nous": "mangions", "Vous": "mangiez", "Ils / Elles": "mangeaient"
+        }
+      },
+      {
+        infinitive: "finir",
+        meaning: "終わる・終える",
+        passe: {
+          "Je / J'": "ai fini", "Tu": "as fini", "Il / Elle": "a fini",
+          "Nous": "avons fini", "Vous": "avez fini", "Ils / Elles": "ont fini"
+        },
+        imparfait: {
+          "Je / J me": "finissais", "Je / J'": "finissais", "Tu": "finissais", "Il / Elle": "finissait",
+          "Nous": "finissions", "Vous": "finissiez", "Ils / Elles": "finissaient"
+        }
+      },
+      {
+        infinitive: "prendre",
+        meaning: "取る・（乗物に）乗る",
+        passe: {
+          "Je / J'": "ai pris", "Tu": "as pris", "Il / Elle": "a pris",
+          "Nous": "avons pris", "Vous": "avez pris", "Ils / Elles": "ont pris"
+        },
+        imparfait: {
+          "Je / J'": "prenais", "Tu": "prenais", "Il / Elle": "prenait",
+          "Nous": "prenions", "Vous": "preniez", "Ils / Elles": "prenaient"
+        }
+      },
+      {
+        infinitive: "venir",
+        meaning: "来る",
+        passe: {
+          "Je / J'": "suis venu", "Tu": "es venu", "Il / Elle": "est venu",
+          "Nous": "sommes venus", "Vous": "êtes venus", "Ils / Elles": "sont venus"
+        },
+        imparfait: {
+          "Je / J'": "venais", "Tu": "venais", "Il / Elle": "venait",
+          "Nous": "venions", "Vous": "veniez", "Ils / Elles": "venaient"
+        }
+      }
+    ];
+
+    const subjects = ["Je / J'", "Tu", "Il / Elle", "Nous", "Vous", "Ils / Elles"];
+    let currentQuestion = {};
+
+    // ランダムな問題を生成
+    function nextQuestion() {
+      const isPasse = Math.random() < 0.5;
+      const tense = isPasse ? "passe" : "imparfait";
+      const verbObj = verbs[Math.floor(Math.random() * verbs.length)];
+      const subject = subjects[Math.floor(Math.random() * subjects.length)];
+      
+      let correctAnswer = verbObj[tense][subject];
+      if (!correctAnswer && subject === "Je / J me") {
+        correctAnswer = verbObj[tense]["Je / J'"];
+      }
+
+      currentQuestion = {
+        tense: tense,
+        verb: verbObj.infinitive,
+        meaning: verbObj.meaning,
+        subject: subject,
+        answer: correctAnswer
+      };
+
+      // 画面表示の更新
+      const badge = document.getElementById("tense-badge");
+      if (isPasse) {
+        badge.textContent = "複合過去 (passé composé)";
+        badge.className = "badge badge-passe";
+      } else {
+        badge.textContent = "半過去 (imparfait)";
+        badge.className = "badge badge-imparfait";
+      }
+
+      document.getElementById("subject-text").textContent = subject;
+      document.getElementById("verb-text").textContent = verbObj.infinitive;
+      document.getElementById("meaning-text").textContent = `(${verbObj.meaning})`;
+      
+      const input = document.getElementById("answer-input");
+      input.value = "";
+      input.focus();
+
+      document.getElementById("result-message").textContent = "";
+      document.getElementById("result-message").className = "result";
+      document.getElementById("hint-message").textContent = "";
+    }
+
+    // 正誤判定
+    function checkAnswer(event) {
+      event.preventDefault();
+      const userInput = document.getElementById("answer-input").value.trim().toLowerCase();
+      const correctAnswer = currentQuestion.answer.toLowerCase();
+
+      const resultElement = document.getElementById("result-message");
+
+      if (!userInput) return;
+
+      // 入力表記の表記ゆれ（アクサン等）の単純比較
+      if (userInput === correctAnswer) {
+        resultElement.textContent = "〇 正解！ Excellent !";
+        resultElement.className = "result correct";
+      } else {
+        resultElement.textContent = "× 不正解... 再チャレンジ！";
+        resultElement.className = "result incorrect";
+      }
+    }
+
+    // ヒント（正解）表示
+    function showHint() {
+      document.getElementById("hint-message").textContent = `正解: ${currentQuestion.answer}`;
+    }
+
+    // 初期化
+    window.onload = nextQuestion;
+  </script>
+
+</body>
+</html>
