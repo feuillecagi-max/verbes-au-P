@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>フランス語 過去時制マスター【複合過去 vs 半過去】</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Poppins:wght@400;600;700&display=swap');
+        body { font-family: 'Poppins', 'Noto Sans JP', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="bg-amber-600 text-white shadow-md">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-2">
+            <h1 class="text-xl md:text-2xl font-bold flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left text-amber-200"></i>
+                <span>フランス語過去時制マスター</span>
+            </h1>
+            <div class="flex items-center gap-2">
+                <span class="bg-amber-800 text-amber-100 text-xs px-3 py-1.5 rounded-full font-medium">複合過去 vs 半過去</span>
+                <!-- 現在形への切替ボタン -->
+                <a href="index.html" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1.5 rounded-full font-bold shadow-md transition-all flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>現在形へ</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-2xl w-full mx-auto p-4 flex-grow flex flex-col justify-center">
+
+        <!-- Quiz Card -->
+        <div id="quiz-card" class="bg-white rounded-2xl shadow-xl p-6 md:p-8 transition-all duration-300">
+            
+            <!-- Progress & Score -->
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div class="text-sm font-semibold text-slate-500">
+                    問題 <span id="current-q-num" class="text-amber-600 text-lg">1</span> / <span id="total-q-num">10</span>
+                </div>
+                <div class="text-sm font-semibold text-slate-500">
+                    スコア: <span id="current-score" class="text-emerald-600 text-lg">0</span>
+                </div>
+            </div>
+
+            <!-- Question Area -->
+            <div class="mb-8">
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                    <span id="verb-infinitive" class="bg-amber-50 text-amber-700 font-bold px-3 py-1 rounded-md text-sm">
+                        être / avoir
+                    </span>
+                    <span id="grammatical-person" class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-md font-medium">
+                        テーマ: 使い分け
+                    </span>
+                </div>
+                <p id="question-text" class="text-xl md:text-2xl font-bold text-slate-800 mt-4">
+                    かっこに入る適切な形を選んでください。
+                </p>
+            </div>
+
+            <!-- Answer Options -->
+            <div id="options-container" class="space-y-3 mb-6"></div>
+
+            <!-- Explanation Area -->
+            <div id="explanation-box" class="hidden p-4 rounded-xl bg-slate-50 border border-slate-200 mb-6">
+                <div id="result-status" class="font-bold text-lg mb-1"></div>
+                <p id="explanation-text" class="text-sm text-slate-600 leading-relaxed"></p>
+            </div>
+
+            <!-- Next Button -->
+            <button id="next-btn" class="hidden w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3.5 rounded-xl shadow-lg hover:shadow-amber-200 transition-all flex items-center justify-center gap-2">
+                <span>次の問題へ</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- Result Card -->
+        <div id="result-card" class="hidden bg-white rounded-2xl shadow-xl p-8 text-center">
+            <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h2 class="text-2xl font-bold mb-2">クイズ完了！</h2>
+            <p class="text-slate-600 mb-6">今回のスコアは...</p>
+
+            <div class="text-4xl font-extrabold text-amber-600 mb-6">
+                <span id="final-score">0</span> / <span id="final-total">10</span>
+            </div>
+
+            <p id="score-comment" class="text-slate-700 font-medium mb-8"></p>
+
+            <button id="restart-btn" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all mb-3">
+                新しい10問に挑戦する
+            </button>
+
+            <a href="index.html" class="inline-block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow transition-all text-center">
+                現在形クイズへ戻る
+            </a>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-400">
+        &copy; フランス語過去時制マスター（複合過去 vs 半過去）
+    </footer>
+
+    <script>
+        const allQuestions = [
+            { infinitive: "faire (〜天気である)", category: "背景描写", question: "Hier, il _____ beau.", options: ["faisait", "a fait", "fait"], correct: 0, explanation: "天気の描写（〜だったという状態）には「半過去 (faisait)」を使います。" },
+            { infinitive: "dormir (寝る)", category: "進行中の背景", question: "Pendant que je _____, le téléphone a sonné.", options: ["dormais", "ai dormi", "dors"], correct: 0, explanation: "「寝ている最中（継続していた背景）」なので半過去 (dormais) を使います。" },
+            { infinitive: "sonner (鳴る)", category: "一回限りの出来事", question: "Pendant que je dormais, le téléphone _____.", options: ["a sonné", "sonnait", "sonne"], correct: 0, explanation: "寝ている最中に発生した「一回限りの割り込みアクション」なので複合過去 (a sonné) になります。" },
+            { infinitive: "être (〜である)", category: "昔の状態", question: "Quand j'_____ petit, j'habitais à Lyon.", options: ["étais", "ai été", "suis"], correct: 0, explanation: "「幼かった頃（昔の状態）」を表すので半過去 (étais) を使います。" },
+            { infinitive: "arriver (到着する)", category: "完了した出来事", question: "Hier soir, Marie _____ à 20 heures.", options: ["est arrivée", "arrivait", "arrive"], correct: 0, explanation: "「昨晩20時に到着した」という完了した点のアクションなので複合過去 (est arrivée) です。" },
+            { infinitive: "aller (行く)", category: "昔の習慣", question: "Tous les dimanches, nous _____ au parc.", options: ["allions", "sommes allés", "allons"], correct: 0, explanation: "「毎週日曜日（繰り返された昔の習慣）」には半過去 (allions) を使います。" },
+            { infinitive: "aller (行く)", category: "回数・特定日", question: "Dimanche dernier, nous _____ au parc.", options: ["sommes allés", "allions", "vont"], correct: 0, explanation: "「この前の日曜日（特定の一回限りの出来事）」なので複合過去 (sommes allés) になります。" },
+            { infinitive: "regarder (見る)", category: "進行中の背景", question: "Je _____ la télé quand il est entré.", options: ["regardais", "ai regardé", "regarde"], correct: 0, explanation: "彼が入ってきた時に「〜を見ていた最中だった」ので半過去 (regardais) になります。" },
+            { infinitive: "entrer (入る)", category: "割り込み動作", question: "Pendant que je regardais la télé, il _____.", options: ["est entré", "entrait", "entre"], correct: 0, explanation: "テレビを見ている時に「入ってきた（瞬間の動作）」なので複合過去 (est entré) です。" },
+            { infinitive: "avoir (持っている/〜歳)", category: "昔の年齢", question: "Quand j'_____ 10 ans, j'avais un chien.", options: ["avais", "ai eu", "ai"], correct: 0, explanation: "年齢の描写（〜歳だった）は状態を表すので半過去 (avais) です。" },
+            { infinitive: "venir (来る)", category: "複合過去・助動詞", question: "Elle _____ chez moi hier.", options: ["est venue", "a venu", "venait"], correct: 0, explanation: "venir は移動を表す動詞なので、助動詞に être を使います（est venue）。" },
+            { infinitive: "partir (出発する)", category: "複合過去・助動詞", question: "Ils _____ ce matin.", options: ["sont partis", "ont parti", "partaient"], correct: 0, explanation: "partir は移動の動詞なので助動詞は être です（sont partis）。" },
+            { infinitive: "manger (食べる)", category: "複合過去・助動詞", question: "J'_____ une pomme.", options: ["ai mangé", "suis mangé", "mangeais"], correct: 0, explanation: "一般的な動詞の複合過去は助動詞 avoir を使います（ai mangé）。" },
+            { infinitive: "tomber (転ぶ/落ちる)", category: "複合過去・助動詞", question: "Le garçon _____ dans la rue.", options: ["est tombé", "a tombé", "tombait"], correct: 0, explanation: "tomber は状態の変化・移動を表すため助動詞 être を使います（est tombé）。" },
+            { infinitive: "passer (過ごす)", category: "複合過去・直接目的語", question: "J'_____ de bonnes vacances.", options: ["ai passé", "suis passé", "passais"], correct: 0, explanation: "「休暇を過ごす」のように目的語を伴う場合は助動詞 avoir を使います（ai passé）。" },
+            { infinitive: "avoir (〜がある)", category: "背景描写", question: "Il y _____ beaucoup de monde à la fête.", options: ["avait", "a eu", "a"], correct: 0, explanation: "「人がたくさんいた（混雑していた状態）」を描写するので半過去 (avait) になります。" },
+            { infinitive: "savoir (知っている)", category: "状態", question: "Je ne _____ pas qu'il était malade.", options: ["savais", "ai su", "sais"], correct: 0, explanation: "「〜と知らなかった（状態）」は通常、半過去 (savais) を使います。" },
+            { infinitive: "vouloir (〜したい)", category: "心情・意図", question: "Elle _____ acheter une robe, mais c'était trop cher.", options: ["voulait", "a voulu", "veut"], correct: 0, explanation: "「〜したかった（過去の気持ち・状態）」を表すので半過去 (voulait) です。" },
+            { infinitive: "pouvoir (〜できる)", category: "状態/能力", question: "Il ne _____ pas venir parce qu'il était occupé.", options: ["pouvait", "a pu", "peut"], correct: 0, explanation: "「〜することができなかった（当時の状態）」なので半過去 (pouvait) を使います。" },
+            { infinitive: "soudain (突然の出来事)", category: "時間副詞と時制", question: "Soudain, l'orage _____.", options: ["a éclaté", "éclatait", "éclate"], correct: 0, explanation: "Soudain (突然) がある場合は一瞬の出来事なので複合過去 (a éclaté) になります。" },
+            { infinitive: "sortir (外に出る)", category: "性数一致", question: "Mes sœurs _____ à 18h.", options: ["sont sorties", "ont sorti", "sont sorti"], correct: 0, explanation: "助動詞 être を使う複合過去では、過去分詞が主語と一致して sorties になります。" },
+            { infinitive: "naître (生まれる)", category: "性数一致", question: "Elle _____ en 2000.", options: ["est née", "a né", "est né"], correct: 0, explanation: "naître は助動詞 être を使い、主語 Elle (女性) に合わせて née になります。" },
+            { infinitive: "mourir (亡くなる)", category: "複合過去・助動詞", question: "Le grand-père _____ l'année dernière.", options: ["est mort", "a mort", "mourait"], correct: 0, explanation: "mourir の過去分詞は mort で、助動詞 être を使います（est mort）。" },
+            { infinitive: "rester (とどまる)", category: "複合過去・助動詞", question: "Nous _____ à la maison tout le week-end.", options: ["sommes restés", "avons resté", "restions"], correct: 0, explanation: "rester は助動詞 être を使います（sommes restés）。" },
+            { infinitive: "retourner (戻る)", category: "複合過去・助動詞", question: "Tu _____ au Japon quand?", options: ["es retourné", "as retourné", "retournais"], correct: 0, explanation: "retourner は移動の動詞なので助動詞 être を使います（es retourné）。" },
+            { infinitive: "lire (読む)", category: "継続中の動作", question: "Hier à 15h, je _____ un livre.", options: ["lisais", "ai lu", "lis"], correct: 0, explanation: "「昨日の15時の時点で〜を読んでいる最中だった」という進行状況なので半過去 (lisais) です。" },
+            { infinitive: "lire (読む)", category: "完了した動作", question: "Hier, j'_____ ce livre en entier.", options: ["ai lu", "lisais", "lit"], correct: 0, explanation: "「最後まで読み終えた（完了）」ので複合過去 (ai lu) を使います。" },
+            { infinitive: "habiter (住む)", category: "期間の限定", question: "J'_____ à Paris pendant trois ans.", options: ["ai habité", "habitais", "habite"], correct: 0, explanation: "期間が区切られた過去の事実は複合過去 (ai habité) です。" },
+            { infinitive: "habiter (住む)", category: "背景描写", question: "À cette époque, j'_____ à la campagne.", options: ["habitais", "ai habité", "habite"], correct: 0, explanation: "「当時は〜に住んでいた」という過去の状態・背景なので半過去 (habitais) です。" },
+            { infinitive: "devoir (〜すべきだった)", category: "理由の解説", question: "Il _____ prendre un parapluie parce qu'il pleuvait.", options: ["a dû", "devait", "doit"], correct: 0, explanation: "雨が降っていたので「傘を持っていかなければならなかった（結果としてそうした）」という事実は複合過去 (a dû) です。" },
+            { infinitive: "aimer (好きだった)", category: "過去の好み", question: "Quand j'étais enfant, j'_____ le chocolat.", options: ["aimais", "ai aimé", "aime"], correct: 0, explanation: "子供の頃の好み（持続的な状態）を表すので半過去 (aimais) です。" },
+            { infinitive: "penser (考えていた)", category: "心情", question: "Je _____ que tu étais déjà parti.", options: ["pensais", "ai pensé", "pense"], correct: 0, explanation: "「〜と思って（考えて）いた」という心理状態は半過去 (pensais) です。" },
+            { infinitive: "être (〜であった)", category: "状態", question: "La fête _____ très amusante.", options: ["était", "a été", "est"], correct: 0, explanation: "パーティの雰囲気や状態を描写しているので半過去 (était) を使います。" },
+            { infinitive: "avoir (〜があった)", category: "背景", question: "Il _____ un grand arbre devant la maison.", options: ["y avait", "il y a eu", "il y a"], correct: 0, explanation: "「大きな木があった（風景の描写）」なので半過去 (y avait) です。" },
+            { infinitive: "faire (〜だった)", category: "気候描写", question: "Il _____ très froid cet hiver-là.", options: ["faisait", "a fait", "fait"], correct: 0, explanation: "その冬の気候状態を描写しているので半過去 (faisait) です。" },
+            { infinitive: "se lever (起きる)", category: "動作の順序", question: "Ce matin, je me _____ à 7h.", options: ["suis levé", "levais", "lève"], correct: 0, explanation: "「今朝7時に起きた」という確定した点のアクションなので複合過去 (suis levé) です。" },
+            { infinitive: "prendre (取る/食べる)", category: "動作の順序", question: "Ensuite, j'_____ un café.", options: ["ai pris", "prenais", "prends"], correct: 0, explanation: "「次にコーヒーを飲んだ」という順序のある出来事なので複合過去 (ai pris) です。" },
+            { infinitive: "quitter (出る)", category: "動作の順序", question: "Puis, j'_____ la maison.", options: ["ai quitté", "quittais", "quitte"], correct: 0, explanation: "「そして家を出た」という一連の複合過去のアクションです (ai quitté)。" },
+            { infinitive: "perdre (失う)", category: "ハプニング", question: "Hier, j'_____ mes clés.", options: ["ai perdu", "perdais", "perds"], correct: 0, explanation: "「鍵をなくした」という単発のハプニングなので複合過去 (ai perdu) です。" },
+            { infinitive: "trouver (見つける)", category: "ハプニング解決", question: "Heureusement, je les _____ plus tard.", options: ["ai trouvées", "trouvais", "trouve"], correct: 0, explanation: "「見つけた」という出来事なので複合過去 (ai trouvées)。" },
+            { infinitive: "voir (見る)", category: "一回限りの目撃", question: "Hier, j'_____ un beau film.", options: ["ai vu", "voyais", "vois"], correct: 0, explanation: "昨日本を見た（鑑賞し終えた）ので複合過去 (ai vu) です。" },
+            { infinitive: "comprendre (理解する)", category: "変化の瞬間", question: "Soudain, j'_____ la leçon.", options: ["ai compris", "comprenais", "comprends"], correct: 0, explanation: "「突然理解した（理解できた瞬間）」なので複合過去 (ai compris) を使います。" },
+            { infinitive: "attendre (待つ)", category: "継続時間の描写", question: "J'_____ le bus pendant 20 minutes.", options: ["ai attendu", "attendais", "attends"], correct: 0, explanation: "「20分間バスを待った（時間が区切られた行動）」なので複合過去 (ai attendu) です。" },
+            { infinitive: "attendre (待つ)", category: "背景", question: "Pendant que j'_____ le bus, j'ai vu un ami.", options: ["attendais", "ai attendu", "attends"], correct: 0, explanation: "バスを待っている最中に友人を見かけたので、背景となる行動は半過去 (attendais) です。" },
+            { infinitive: "vouloir (〜しようとした)", category: "意志の発動", question: "J'_____ lui parler, mais il est parti.", options: ["ai voulu", "voulais", "veux"], correct: 0, explanation: "「話しかけようとした（行動を起こそうとした）」という点のアクションは複合過去 (ai voulu) で表現されます。" },
+            { infinitive: "se coucher (寝る)", category: "昨夜の動作", question: "Hier soir, tu t'_____ à quelle heure?", options: ["es couché", "couchais", "couches"], correct: 0, explanation: "「何時に寝た？」という一回の過去の行為は複合過去 (es couché) です。" },
+            { infinitive: "dire (言う)", category: "発言の完了", question: "Qu'est-ce qu'il _____?", options: ["a dit", "disait", "dit"], correct: 0, explanation: "「彼は何と言ったの？」という完了した発言を聞くので複合過去 (a dit) です。" },
+            { infinitive: "écrire (書く)", category: "作成の完了", question: "Elle _____ une lettre à sa mère.", options: ["a écrit", "écrivait", "écrit"], correct: 0, explanation: "手紙を書き上げた（完了）ので複合過去 (a écrit) です。" },
+            { infinitive: "neiger (雪が降る)", category: "天候の背景", question: "Il _____ quand nous sommes partis.", options: ["neigeait", "a neigé", "neige"], correct: 0, explanation: "出かけた時に「雪が降っていた（背景）」ので半過去 (neigeait) です。" },
+            { infinitive: "apprendre (学ぶ/知る)", category: "ニュースの認知", question: "J'_____ la nouvelle ce matin.", options: ["ai appris", "apprenais", "apprends"], correct: 0, explanation: "今朝その知らせを「知った/聞いた」という出来事なので複合過去 (ai appris) です。" }
+        ];
+
+        let selectedQuestions = [];
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        const quizCard = document.getElementById("quiz-card");
+        const resultCard = document.getElementById("result-card");
+        const currentQNumEl = document.getElementById("current-q-num");
+        const totalQNumEl = document.getElementById("total-q-num");
+        const currentScoreEl = document.getElementById("current-score");
+        const verbInfinitiveEl = document.getElementById("verb-infinitive");
+        const grammaticalPersonEl = document.getElementById("grammatical-person");
+        const questionTextEl = document.getElementById("question-text");
+        const optionsContainer = document.getElementById("options-container");
+        const explanationBox = document.getElementById("explanation-box");
+        const resultStatusEl = document.getElementById("result-status");
+        const explanationTextEl = document.getElementById("explanation-text");
+        const nextBtn = document.getElementById("next-btn");
+        const finalScoreEl = document.getElementById("final-score");
+        const finalTotalEl = document.getElementById("final-total");
+        const scoreCommentEl = document.getElementById("score-comment");
+        const restartBtn = document.getElementById("restart-btn");
+
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function initQuiz() {
+            selectedQuestions = shuffleArray(allQuestions).slice(0, 10);
+            currentQuestion = 0;
+            score = 0;
+            totalQNumEl.textContent = selectedQuestions.length;
+            currentScoreEl.textContent = score;
+            
+            quizCard.classList.remove("hidden");
+            resultCard.classList.add("hidden");
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false;
+            const data = selectedQuestions[currentQuestion];
+
+            currentQNumEl.textContent = currentQuestion + 1;
+            verbInfinitiveEl.textContent = data.infinitive;
+            grammaticalPersonEl.textContent = `テーマ: ${data.category}`;
+            questionTextEl.textContent = data.question;
+
+            explanationBox.classList.add("hidden");
+            nextBtn.classList.add("hidden");
+            optionsContainer.innerHTML = "";
+
+            const indexedOptions = data.options.map((opt, i) => ({ text: opt, isCorrect: i === data.correct }));
+            const shuffledOptions = shuffleArray(indexedOptions);
+
+            shuffledOptions.forEach((optObj) => {
+                const btn = document.createElement("button");
+                btn.className = "w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-amber-400 hover:bg-amber-50/50 transition-all font-semibold text-slate-700 flex justify-between items-center";
+                btn.innerHTML = `
+                    <span>${optObj.text}</span>
+                    <i class="fa-regular fa-circle text-slate-300 status-icon"></i>
+                `;
+                btn.onclick = () => selectOption(btn, optObj.isCorrect, shuffledOptions);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedBtn, isCorrect, shuffledOptions) {
+            if (answered) return;
+            answered = true;
+
+            const data = selectedQuestions[currentQuestion];
+            const buttons = optionsContainer.children;
+
+            if (isCorrect) {
+                score++;
+                currentScoreEl.textContent = score;
+                selectedBtn.className = "w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-800 font-semibold flex justify-between items-center";
+                selectedBtn.querySelector(".status-icon").className = "fa-solid fa-circle-check text-emerald-600";
+                
+                resultStatusEl.textContent = "正解！ C'est ça !";
+                resultStatusEl.className = "font-bold text-lg mb-1 text-emerald-600";
+            } else {
+                selectedBtn.className = "w-full text-left p-4 rounded-xl border-2 border-rose-500 bg-rose-50 text-rose-800 font-semibold flex justify-between items-center";
+                selectedBtn.querySelector(".status-icon").className = "fa-solid fa-circle-xmark text-rose-600";
+                
+                shuffledOptions.forEach((opt, idx) => {
+                    if (opt.isCorrect) {
+                        buttons[idx].className = "w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-800 font-semibold flex justify-between items-center";
+                        buttons[idx].querySelector(".status-icon").className = "fa-solid fa-circle-check text-emerald-600";
+                    }
+                });
+
+                resultStatusEl.textContent = "不正解... Dommage !";
+                resultStatusEl.className = "font-bold text-lg mb-1 text-rose-600";
+            }
+
+            explanationTextEl.textContent = data.explanation;
+            explanationBox.classList.remove("hidden");
+            nextBtn.classList.remove("hidden");
+        }
+
+        nextBtn.onclick = () => {
+            currentQuestion++;
+            if (currentQuestion < selectedQuestions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        };
+
+        function showResults() {
+            quizCard.classList.add("hidden");
+            resultCard.classList.remove("hidden");
+
+            finalScoreEl.textContent = score;
+            finalTotalEl.textContent = selectedQuestions.length;
+
+            const percentage = (score / selectedQuestions.length) * 100;
+            if (percentage === 100) {
+                scoreCommentEl.textContent = "完璧です！過去時制（複合過去 vs 半過去）の感覚が完璧に身についています！🎉";
+            } else if (percentage >= 70) {
+                scoreCommentEl.textContent = "素晴らしい！文脈による時制の使い分けがしっかりできています。👍";
+            } else {
+                scoreCommentEl.textContent = "解説を読みながら繰り返し練習して、「点のアクション」と「背景描写」のニュアンスを掴んでいきましょう！💪";
+            }
+        }
+
+        restartBtn.onclick = initQuiz;
+        initQuiz();
+    </script>
+</body>
+</html>
