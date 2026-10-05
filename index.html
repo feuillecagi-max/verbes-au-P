@@ -15,12 +15,19 @@
 
     <!-- Header -->
     <header class="bg-indigo-600 text-white shadow-md">
-        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-2">
             <h1 class="text-xl md:text-2xl font-bold flex items-center gap-2">
                 <i class="fa-solid fa-book-open text-indigo-200"></i>
                 <span>フランス語動詞活用マスター</span>
             </h1>
-            <span class="bg-indigo-800 text-indigo-100 text-xs px-3 py-1 rounded-full font-medium">直説法現在形 (50問ランダム)</span>
+            <div class="flex items-center gap-2">
+                <span class="bg-indigo-800 text-indigo-100 text-xs px-3 py-1.5 rounded-full font-medium">現在形</span>
+                <!-- 過去形への切替ボタン -->
+                <a href="past.html" class="bg-amber-500 hover:bg-amber-600 text-white text-xs px-3 py-1.5 rounded-full font-bold shadow-md transition-all flex items-center gap-1">
+                    <span>過去形へ</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
         </div>
     </header>
 
@@ -85,9 +92,13 @@
 
             <p id="score-comment" class="text-slate-700 font-medium mb-8"></p>
 
-            <button id="restart-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
+            <button id="restart-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all mb-3">
                 新しい10問に挑戦する
             </button>
+            
+            <a href="past.html" class="inline-block w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl shadow transition-all text-center">
+                過去形（複合過去vs半過去）へ挑戦する
+            </a>
         </div>
 
     </main>
@@ -98,9 +109,7 @@
     </footer>
 
     <script>
-        // --- 直説法現在形 50問マスターデータベース ---
         const allQuestions = [
-            // 第一群規則動詞 (-er)
             { infinitive: "parler (話す)", person: "Je", question: "Je _____ français.", options: ["parle", "parles", "parlons"], correct: 0, explanation: "第一群動詞 Je の語尾は -e。" },
             { infinitive: "parler (話す)", person: "Tu", question: "Tu _____ anglais.", options: ["parle", "parles", "parlez"], correct: 1, explanation: "第一群動詞 Tu の語尾は -es。" },
             { infinitive: "parler (話す)", person: "Nous", question: "Nous _____ ensemble.", options: ["parlez", "parlons", "parlent"], correct: 1, explanation: "第一群動詞 Nous の語尾は -ons。" },
@@ -110,55 +119,46 @@
             { infinitive: "aimer (好き)", person: "Nous", question: "Nous _____ le cinéma.", options: ["aimons", "aimez", "aiment"], correct: 0, explanation: "Nous aimons: 第一群動詞 Nous の語尾は -ons。" },
             { infinitive: "habiter (住む)", person: "Tu", question: "Tu _____ à Paris.", options: ["habites", "habite", "habitez"], correct: 0, explanation: "Tu habites: 無声のhで始まる動詞。" },
             { infinitive: "habiter (住む)", person: "Vous", question: "Vous _____ où?", options: ["habitez", "habitons", "habites"], correct: 0, explanation: "Vous habitez: 敬称・複数での活用。" },
-            { infinitive: "manger (食べる)", person: "Nous", question: "Nous _____話 (du pain).", options: ["mangeons", "mangons", "mangez"], correct: 0, explanation: "manger の Nous 活用は発音維持（gの後にoが来ると「ゴ」になる）のため -geons となります。" },
+            { infinitive: "manger (食べる)", person: "Nous", question: "Nous _____ (du pain).", options: ["mangeons", "mangons", "mangez"], correct: 0, explanation: "manger の Nous 活用は発音維持のため -geons となります。" },
             { infinitive: "étudier (勉強する)", person: "Elle", question: "Elle _____ le français.", options: ["étudie", "étudies", "étudient"], correct: 0, explanation: "Elle étudie: 3人称単数語尾は -e。" },
             { infinitive: "écouter (聴く)", person: "Ils", question: "Ils _____ la radio.", options: ["écoutent", "écoute", "écoutons"], correct: 0, explanation: "Ils écoutent: -ent は発音しません。" },
-
-            // 重要最頻出・不規則動詞
             { infinitive: "être (〜である)", person: "Je", question: "Je _____ étudiant.", options: ["suis", "es", "est"], correct: 0, explanation: "être の Je 活用は suis。" },
             { infinitive: "être (〜である)", person: "Tu", question: "Tu _____ prêt?", options: ["es", "suis", "est"], correct: 0, explanation: "être の Tu 活用は es。" },
             { infinitive: "être (〜である)", person: "Il", question: "Il _____ grand.", options: ["est", "es", "sommes"], correct: 0, explanation: "être の Il 活用は est。" },
             { infinitive: "être (〜である)", person: "Nous", question: "Nous _____ ici.", options: ["sommes", "êtes", "sont"], correct: 0, explanation: "être の Nous 活用は sommes。" },
-            { infinitive: "être (〜である)", person: "Vous", question: "Vous _____日本 (Japonais)?", options: ["êtes", "sommes", "sont"], correct: 0, explanation: "être の Vous 活用は êtes。" },
+            { infinitive: "être (〜である)", person: "Vous", question: "Vous _____ Japonais?", options: ["êtes", "sommes", "sont"], correct: 0, explanation: "être の Vous 活用は êtes。" },
             { infinitive: "être (〜である)", person: "Elles", question: "Elles _____ occupées.", options: ["sont", "sommes", "êtes"], correct: 0, explanation: "être の Elles 活用は sont。" },
-
             { infinitive: "avoir (持つ)", person: "J'", question: "J'_____ un chat.", options: ["ai", "as", "a"], correct: 0, explanation: "avoir の J' 活用は ai。" },
             { infinitive: "avoir (持つ)", person: "Tu", question: "Tu _____ quel âge?", options: ["as", "ai", "a"], correct: 0, explanation: "avoir の Tu 活用は as。" },
             { infinitive: "avoir (持つ)", person: "Elle", question: "Elle _____ une voiture.", options: ["a", "as", "avons"], correct: 0, explanation: "avoir の Elle 活用は a。" },
             { infinitive: "avoir (持つ)", person: "Nous", question: "Nous _____ le temps.", options: ["avons", "avez", "ont"], correct: 0, explanation: "avoir の Nous 活用は avons。" },
             { infinitive: "avoir (持つ)", person: "Vous", question: "Vous _____ des questions?", options: ["avez", "avons", "ont"], correct: 0, explanation: "avoir の Vous 活用は avez。" },
             { infinitive: "avoir (持つ)", person: "Ils", question: "Ils _____ faim.", options: ["ont", "sont", "avons"], correct: 0, explanation: "avoir の Ils 活用は ont。（sont との混同に注意）" },
-
             { infinitive: "aller (行く)", person: "Je", question: "Je _____ au marché.", options: ["vais", "vas", "va"], correct: 0, explanation: "aller の Je 活用は vais。" },
             { infinitive: "aller (行く)", person: "Tu", question: "Tu _____ bien?", options: ["vas", "vais", "va"], correct: 0, explanation: "aller の Tu 活用は vas。" },
             { infinitive: "aller (行く)", person: "Il", question: "Il _____ à l'école.", options: ["va", "vas", "allons"], correct: 0, explanation: "aller の Il 活用は va。" },
             { infinitive: "aller (行く)", person: "Nous", question: "Nous _____ ensemble.", options: ["allons", "allez", "vont"], correct: 0, explanation: "aller の Nous 活用は allons。" },
             { infinitive: "aller (行く)", person: "Vous", question: "Vous _____ comment?", options: ["allez", "allons", "vont"], correct: 0, explanation: "aller の Vous 活用は allez。" },
             { infinitive: "aller (行く)", person: "Ils", question: "Ils _____ au cinéma.", options: ["vont", "vont-ils", "allez"], correct: 0, explanation: "aller の Ils 活用は vont。" },
-
             { infinitive: "faire (する/作る)", person: "Je", question: "Je _____ du sport.", options: ["fais", "fait", "faisons"], correct: 0, explanation: "faire の Je 活用は fais。" },
             { infinitive: "faire (する/作る)", person: "Elle", question: "Elle _____ la cuisine.", options: ["fait", "fais", "faites"], correct: 0, explanation: "faire の Elle 活用は fait。" },
             { infinitive: "faire (する/作る)", person: "Nous", question: "Nous _____ attention.", options: ["faisons", "faites", "font"], correct: 0, explanation: "faire の Nous 活用は faisons。" },
             { infinitive: "faire (する/作る)", person: "Vous", question: "Qu'est-ce que vous _____?", options: ["faites", "faisez", "faisons"], correct: 0, explanation: "faire の Vous 活用は不規則で faites となります。" },
             { infinitive: "faire (する/作る)", person: "Ils", question: "Ils _____ du bruit.", options: ["font", "faisons", "faites"], correct: 0, explanation: "faire の Ils 活用は font。" },
-
-            // 第三群不規則動詞群
             { infinitive: "venir (来る)", person: "Je", question: "Je _____ de Tokyo.", options: ["viens", "vient", "venons"], correct: 0, explanation: "venir の Je 活用は viens。" },
             { infinitive: "venir (来る)", person: "Nous", question: "Nous _____ demain.", options: ["venons", "venez", "viennent"], correct: 0, explanation: "venir の Nous 活用は venons。" },
             { infinitive: "venir (来る)", person: "Ils", question: "Ils _____ de France.", options: ["viennent", "venons", "vient"], correct: 0, explanation: "venir の Ils 活用は viennent。" },
-
             { infinitive: "prendre (取る/食べる)", person: "Je", question: "Je _____ un café.", options: ["prends", "prend", "prenons"], correct: 0, explanation: "prendre の Je 活用は prends。" },
             { infinitive: "prendre (取る/食べる)", person: "Il", question: "Il _____ le train.", options: ["prend", "prends", "prennent"], correct: 0, explanation: "prendre の Il 活用は d で終わる prend。" },
             { infinitive: "prendre (取る/食べる)", person: "Nous", question: "Nous _____ le petit-déjeuner.", options: ["prenons", "prennez", "prends"], correct: 0, explanation: "prendre の Nous 活用は d が脱落して prenons。" },
             { infinitive: "prendre (取る/食べる)", person: "Elles", question: "Elles _____ un taxi.", options: ["prennent", "prenons", "prends"], correct: 0, explanation: "prendre の Elles 活用は n が重なり prennent。" },
-
             { infinitive: "vouloir (〜したい)", person: "Je", question: "Je _____ un thé, s'il vous plaît.", options: ["veux", "peut", "veut"], correct: 0, explanation: "vouloir の Je 活用は veux。" },
             { infinitive: "pouvoir (〜できる)", person: "Vous", question: "Vous _____ m'aider?", options: ["pouvez", "peut", "pouvez-vous"], correct: 0, explanation: "pouvoir の Vous 活用は pouvez。" },
             { infinitive: "devoir (〜しなければならない)", person: "Tu", question: "Tu _____ partir.", options: ["dois", "doit", "devons"], correct: 0, explanation: "devoir の Tu 活用は dois。" },
             { infinitive: "savoir (知っている)", person: "Je", question: "Je ne _____ pas.", options: ["sais", "sait", "savons"], correct: 0, explanation: "savoir の Je 活用は sais。" },
             { infinitive: "voir (見る)", person: "Tu", question: "Tu _____ la tour Eiffel?", options: ["vois", "voit", "voyons"], correct: 0, explanation: "voir の Tu 活用は vois。" },
             { infinitive: "lire (読む)", person: "Nous", question: "Nous _____ un livre.", options: ["lisons", "lisez", "lisent"], correct: 0, explanation: "lire の Nous 活用は s が入って lisons。" },
-            { infinitive: "écrire (書く)", person: "Elle", question: "Elle _____一通の手紙.", options: ["écrit", "écris", "écrivons"], correct: 0, explanation: "écrire の Elle 活用は écrit。" },
+            { infinitive: "écrire (書く)", person: "Elle", question: "Elle _____ une lettre.", options: ["écrit", "écris", "écrivons"], correct: 0, explanation: "écrire の Elle 活用は écrit。" },
             { infinitive: "dire (言う)", person: "Vous", question: "Qu'est-ce que vous _____?", options: ["dites", "disez", "disons"], correct: 0, explanation: "dire の Vous 活用は不規則で dites。" }
         ];
 
@@ -167,7 +167,6 @@
         let score = 0;
         let answered = false;
 
-        // DOM Elements
         const quizCard = document.getElementById("quiz-card");
         const resultCard = document.getElementById("result-card");
         const currentQNumEl = document.getElementById("current-q-num");
@@ -186,7 +185,6 @@
         const scoreCommentEl = document.getElementById("score-comment");
         const restartBtn = document.getElementById("restart-btn");
 
-        // 配列をシャッフルするアルゴリズム (フィッシャー–イェーツ)
         function shuffleArray(array) {
             const arr = [...array];
             for (let i = arr.length - 1; i > 0; i--) {
@@ -196,11 +194,8 @@
             return arr;
         }
 
-        // Quiz Initialization
         function initQuiz() {
-            // 50問からランダムに10問を抽出
             selectedQuestions = shuffleArray(allQuestions).slice(0, 10);
-            
             currentQuestion = 0;
             score = 0;
             totalQNumEl.textContent = selectedQuestions.length;
@@ -211,7 +206,6 @@
             loadQuestion();
         }
 
-        // Load Question
         function loadQuestion() {
             answered = false;
             const data = selectedQuestions[currentQuestion];
@@ -225,7 +219,6 @@
             nextBtn.classList.add("hidden");
             optionsContainer.innerHTML = "";
 
-            // 選択肢もランダムに並び替える
             const indexedOptions = data.options.map((opt, i) => ({ text: opt, isCorrect: i === data.correct }));
             const shuffledOptions = shuffleArray(indexedOptions);
 
@@ -241,7 +234,6 @@
             });
         }
 
-        // Handle Option Selection
         function selectOption(selectedBtn, isCorrect, shuffledOptions) {
             if (answered) return;
             answered = true;
@@ -261,7 +253,6 @@
                 selectedBtn.className = "w-full text-left p-4 rounded-xl border-2 border-rose-500 bg-rose-50 text-rose-800 font-semibold flex justify-between items-center";
                 selectedBtn.querySelector(".status-icon").className = "fa-solid fa-circle-xmark text-rose-600";
                 
-                // 正解のボタンを緑色でハイライト
                 shuffledOptions.forEach((opt, idx) => {
                     if (opt.isCorrect) {
                         buttons[idx].className = "w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-800 font-semibold flex justify-between items-center";
@@ -305,8 +296,6 @@
         }
 
         restartBtn.onclick = initQuiz;
-
-        // Run on load
         initQuiz();
     </script>
 </body>
